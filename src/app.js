@@ -15,15 +15,44 @@ const allowedOrigins = [
 
 app.use(cors({
   origin: function (origin, callback) {
-    // Permitir requests sin origin (como mobile apps o curl)
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV === 'development') {
-      callback(null, true);
-    } else {
-      callback(new Error('No permitido por CORS'));
+    // Permitir requests sin origin (como mobile apps, curl, Postman, etc.)
+    if (!origin) {
+      return callback(null, true);
     }
+    
+    // Verificar si el origin está en la lista permitida
+    const isAllowed = allowedOrigins.some(allowed => allowed === origin);
+    
+    // Permitir cualquier dominio de Vercel (vercel.app)
+    if (origin.includes('.vercel.app')) {
+      return callback(null, true);
+    }
+    
+    // En desarrollo, permitir cualquier origin
+    if (process.env.NODE_ENV === 'development') {
+      return callback(null, true);
+    }
+    
+    // En producción, si no hay FRONTEND_URL configurado, permitir todos (temporal)
+    // Esto es útil durante el despliegue inicial antes de configurar FRONTEND_URL
+    if (!process.env.FRONTEND_URL) {
+      console.warn('⚠️  FRONTEND_URL no configurado. Permitindo todos los orígenes.');
+      return callback(null, true);
+    }
+    
+    // Si está en la lista permitida
+    if (isAllowed) {
+      return callback(null, true);
+    }
+    
+    // Si llegamos aquí, el origin no está permitido
+    console.log('❌ Origin no permitido:', origin);
+    console.log('✅ Orígenes permitidos:', allowedOrigins);
+    callback(new Error('No permitido por CORS'));
   },
-  credentials: true
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 // Middlewares
