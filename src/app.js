@@ -33,21 +33,21 @@ app.use(cors({
       return callback(null, true);
     }
     
-    // En producción, si no hay FRONTEND_URL configurado, permitir todos (temporal)
-    // Esto es útil durante el despliegue inicial antes de configurar FRONTEND_URL
+    // En produccion, si no hay FRONTEND_URL configurado, permitir todos (temporal)
+    // Esto es util durante el despliegue inicial antes de configurar FRONTEND_URL
     if (!process.env.FRONTEND_URL) {
-      console.warn('⚠️  FRONTEND_URL no configurado. Permitindo todos los orígenes.');
+      console.warn('FRONTEND_URL no configurado. Permitindo todos los origenes.');
       return callback(null, true);
     }
     
-    // Si está en la lista permitida
+    // Si esta en la lista permitida
     if (isAllowed) {
       return callback(null, true);
     }
     
-    // Si llegamos aquí, el origin no está permitido
-    console.log('❌ Origin no permitido:', origin);
-    console.log('✅ Orígenes permitidos:', allowedOrigins);
+    // Si llegamos aqui, el origin no esta permitido
+    console.log('Origin no permitido:', origin);
+    console.log('Origenes permitidos:', allowedOrigins);
     callback(new Error('No permitido por CORS'));
   },
   credentials: true,

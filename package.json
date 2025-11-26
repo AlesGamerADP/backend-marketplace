@@ -6,7 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node src/server.js",
-    "dev": "nodemon src/server.js"
+    "dev": "nodemon src/server.js",
+    "init:roles": "node src/scripts/initRoles.js",
+    "init:users": "node src/scripts/initUsers.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
